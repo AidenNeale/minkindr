@@ -1,25 +1,32 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.8)
 project(minkindr)
 
-find_package(catkin_simple REQUIRED)
-catkin_simple(ALL_DEPS_REQUIRED)
+find_package(ament_cmake REQUIRED)
+find_package(Threads REQUIRED)
+find_package(ament_cmake_gtest REQUIRED)
+find_package(Eigen3 REQUIRED)
 
-find_package(Threads)
+# Set C++ standard
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-catkin_add_gtest(${PROJECT_NAME}_tests 
+# Install headers
+install(DIRECTORY include/ DESTINATION include)
+
+file(GLOB_RECURSE LibFiles "include/*")
+add_custom_target(headers SOURCES ${LibFiles})
+
+# Add gtest
+ament_add_gtest(${PROJECT_NAME}_tests
   test/test-main.cc
   test/test-rotation.cc
   test/test-sim3.cc
   test/test-transformation.cc
   test/test-transformation-2d.cc
 )
-target_link_libraries(${PROJECT_NAME}_tests ${catkin_LIBRARIES} 
-                                            ${CMAKE_THREAD_LIBS_INIT})
+target_include_directories(${PROJECT_NAME}_tests PRIVATE
+  ${CMAKE_CURRENT_SOURCE_DIR}/include
+)
+target_link_libraries(${PROJECT_NAME}_tests Threads::Threads Eigen3::Eigen)
 
-# Add all files to show up in QtCreator.
-FILE(GLOB_RECURSE LibFiles "include/*")
-add_custom_target(headers SOURCES ${LibFiles})
-
-cs_install()
-cs_export()
-
+ament_package()
