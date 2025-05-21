@@ -1,6 +1,6 @@
 // Copyright (c) 2015, Autonomous Systems Lab, ETH Zurich
 // All rights reserved.
-// 
+//
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
 //     * Redistributions of source code must retain the above copyright
@@ -11,7 +11,7 @@
 //     * Neither the name of the <organization> nor the
 //       names of its contributors may be used to endorse or promote products
 //       derived from this software without specific prior written permission.
-// 
+//
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 // ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 // WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -26,31 +26,35 @@
 #define MINKINDR_MINIMAL_COMMON_H
 
 #include <Eigen/Core>
-#include <glog/logging.h>
+#include <stdexcept>
 
 namespace kindr {
 namespace minimal {
 
-inline void skewMatrix(const Eigen::Vector3d& v, Eigen::Matrix3d * skew) {
-  CHECK_NOTNULL(skew);
+inline void skewMatrix(const Eigen::Vector3d& v, Eigen::Matrix3d* skew) {
+  if (!skew) {
+    throw std::invalid_argument("skew is null");
+  }
   skew->setZero();
-  (*skew)(0,1) = -v[2];
-  (*skew)(1,0) =  v[2];
-  (*skew)(0,2) =  v[1];
-  (*skew)(2,0) = -v[1];
-  (*skew)(1,2) = -v[0];
-  (*skew)(2,1) =  v[0];
+  (*skew)(0, 1) = -v[2];
+  (*skew)(1, 0) = v[2];
+  (*skew)(0, 2) = v[1];
+  (*skew)(2, 0) = -v[1];
+  (*skew)(1, 2) = -v[0];
+  (*skew)(2, 1) = v[0];
 }
 
-inline void skewMatrix(const Eigen::Vector3d& v, Eigen::Map<Eigen::Matrix3d> * skew) {
-  CHECK_NOTNULL(skew);
+inline void skewMatrix(const Eigen::Vector3d& v, Eigen::Map<Eigen::Matrix3d>* skew) {
+  if (!skew) {
+    throw std::invalid_argument("skew is null");
+  }
   skew->setZero();
-  (*skew)(0,1) = -v[2];
-  (*skew)(1,0) =  v[2];
-  (*skew)(0,2) =  v[1];
-  (*skew)(2,0) = -v[1];
-  (*skew)(1,2) = -v[0];
-  (*skew)(2,1) =  v[0];
+  (*skew)(0, 1) = -v[2];
+  (*skew)(1, 0) = v[2];
+  (*skew)(0, 2) = v[1];
+  (*skew)(2, 0) = -v[1];
+  (*skew)(1, 2) = -v[0];
+  (*skew)(2, 1) = v[0];
 }
 
 inline Eigen::Matrix3d skewMatrix(const Eigen::Vector3d& v) {
@@ -62,4 +66,4 @@ inline Eigen::Matrix3d skewMatrix(const Eigen::Vector3d& v) {
 }  // namespace minimal
 }  // namespace kindr
 
-#endif // MINKINDR_MINIMAL_COMMON_H
+#endif  // MINKINDR_MINIMAL_COMMON_H
